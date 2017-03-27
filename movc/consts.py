@@ -11,3 +11,5 @@ ALLOWED_MONTHS = range(1, 13)
 BASEDIR = dirname(dirname(realpath(__file__)))
 MAPPING_FILE = os.path.join(BASEDIR, "config", "mapping.csv")
 
+### xl template
+XL_TEMPLATE_FILE = os.path.join(BASEDIR, "config", "movc_base_2012.xlsx")
