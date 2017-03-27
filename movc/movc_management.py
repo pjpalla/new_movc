@@ -10,15 +10,17 @@ from movc import consts
 from movc import province_data
 from movc.movutility import MovUtility
 from movc.new_movc import Movc
-import re, os
+from movc.movxl import MovXL
+import re, os, locale, datetime, calendar
 
 
 def menu():
     print("\n--- MOVC GENERATOR 2017 ---\n")
-    print("* GENERATE MOVC  -----> (1)")
-    print("* VALIDATE MOVC  -----> (2)")
-    print("* LOAD MOVC FILE -----> (3)")
-    print("* QUIT           -----> (0)")
+    print("* GENERATE MOVC       -----> (1)")
+    print("* VALIDATE MOVC       -----> (2)")
+    print("* LOAD MOVC FILE      -----> (3)")
+    print("* EXPORT MOVC TO XL   -----> (4)")
+    print("* QUIT                -----> (0)")
 
 
 
@@ -44,7 +46,7 @@ def generate_movc():
         print("*********************************************\n")
         confirmation = input("Confirm?[Yes/No/Quit]\n---->")
         if re.search('^[Yy]', confirmation):
-            if (check_province(province_name) & check_year(year) & check_month(month)):
+            if (check_province(province_name) & check_year(year) & check_month(month, year)):
                 break
         elif re.search('^[Nn]', confirmation):
             continue
@@ -65,7 +67,80 @@ def generate_movc():
     movc_obj.set_input_dir(input_path)
     movc_obj.set_output_dir(output_path)
     movc_obj.set_mapper(consts.MAPPING_FILE)
-    movc_obj.create_movc(province_name)
+    try:
+        movc_filepath = movc_obj.create_movc(province_name)
+    except Exception as e:
+        print(e)
+        return
+
+
+    export = input("Do you want to export the file to EXCEL? [Y/N]")
+    if re.search('[Yy]', export):
+        xl_builder = MovXL(consts.XL_TEMPLATE_FILE, consts.MAPPING_FILE, movc_filepath)
+        ### initial file name
+        locale.setlocale(locale.LC_ALL, 'ita')
+        month_name = (calendar.month_name[int(month)]).capitalize()
+        province_symbol = province_data.PROVINCIAL_SYMOBOLS[province_name]
+        initial_filename = ("MOVC_" + province_symbol + "_" + month_name + "_" + year).upper()
+
+        frame = Tk()
+        filepath = asksaveasfilename(defaultextension='xlsx', initialfile=initial_filename)
+        frame.destroy()
+        print("\nExporting MOV/C to EXCEL\n....\n\n")
+        xl_builder.build_xl(filepath)
+        print("...MOV/C successfully exported!")
+
+
+
+def export_to_xl():
+    print("***** EXPORT MOVC TO EXCEL *****\n")
+    province_name = ""
+    year = None
+    month = None
+
+    while True:
+        province_name = input("Province name: \n----> ")
+        #province_name = check_province(province_name)
+        year = input("\nYear [2016 - ]: \n----> ")
+        #year = check_year(year)
+        month = input("\nMonth [1-12]: \n----> ")
+        #month = check_month(month)
+        print("\n********************************************")
+        print('Data inserted:')
+        print("\nProvince:", province_name)
+        print("\nYear: ", year)
+        print("\nMonth: ", month)
+        print("*********************************************\n")
+        confirmation = input("Confirm?[Yes/No/Quit]\n----> ")
+
+        if re.search('^[Yy]', confirmation):
+            if (check_province(province_name) & check_year(year) & check_month(month, year)):
+                province_name = check_province(province_name, True)
+                break
+        elif re.search('^[Nn]', confirmation):
+            continue
+        else:
+            return
+
+    #output_dir = MovUtility.config_io_paths(year, month)[1]
+    target_dir = MovUtility.default_io_config()[1]
+    movc_to_convert = MovUtility.get_movc(target_dir, province_name, year, month)
+    #print(movc_to_convert)
+    xl_builder = MovXL(consts.XL_TEMPLATE_FILE, consts.MAPPING_FILE, movc_to_convert)
+
+    ### initial file name
+    locale.setlocale(locale.LC_ALL, 'ita')
+    month_name = (calendar.month_name[int(month)]).capitalize()
+    province_symbol = province_data.PROVINCIAL_SYMOBOLS[province_name]
+    initial_filename = ("MOVC_" + province_symbol + "_" + month_name + "_" + year).upper()
+
+    frame = Tk()
+    filepath = asksaveasfilename(defaultextension = 'xlsx', initialfile = initial_filename)
+    frame.destroy()
+    print("\nExporting MOV/C to EXCEL\n....\n\n")
+    xl_builder.build_xl(filepath)
+    print("...MOV/C successfully exported!")
+
 
 
 def validate_movc():
@@ -90,7 +165,7 @@ def validate_movc():
         confirmation = input("Confirm?[Yes/No/Quit]\n----> ")
 
         if re.search('^[Yy]', confirmation):
-            if (check_province(province_name) & check_year(year) & check_month(month)):
+            if (check_province(province_name) & check_year(year) & check_month(month, year)):
                 province_name = check_province(province_name, True)
                 break
         elif re.search('^[Nn]', confirmation):
@@ -174,7 +249,8 @@ def main(argv):
         '0': quit,
         '1': generate_movc,
         '2': validate_movc,
-        '3': load_movc
+        '3': load_movc,
+        '4': export_to_xl
     }
     while True:
         menu()
@@ -198,15 +274,21 @@ def check_year(year):
         print("**** Illegal value: [year] ****")
         return False
 
-def check_month(month):
+def check_month(month, year):
+    now = datetime.datetime.now()
+    current_year, current_month = now.year, now.month
     try:
+        if int(year) == current_year and  int(month) > current_month:
+            print("\n**** Illegal value: [month] ****")
+            print("**** Month selected can't be greater than current month ****\n")
+            return False
         if int(month) in consts.ALLOWED_MONTHS:
             return True
         else:
             print("**** Illegal value: [month] ****")
             return False
     except:
-        print("**** Illegal value: [month] ****")
+        print("**** A problem has occurred.\nIllegal value: [month] ****")
         return False
 
 def check_province(province, get_value = False):
