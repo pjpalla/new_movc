@@ -57,8 +57,47 @@ class Movc:
     def get_output_dir(self):
         return self.output_dir
 
+
+    def get_movc(self, province_name):
+        year = self.get_year()
+        month = self.get_month()
+        provincial_symbol = None
+
+        province = province_name.lower()
+        if (re.search('città|metropolitana|cagliari', province)):
+              provincial_symbol = PROVINCIAL_SYMOBOLS["cagliari"]
+        elif (re.search('sud|sardegna', province)):
+              provincial_symbol = PROVINCIAL_SYMOBOLS["sud sardegna"]
+        elif (re.search('sassari', province)):
+              provincial_symbol = PROVINCIAL_SYMOBOLS["sassari"]
+        elif (re.search('oristano', province)):
+              provincial_symbol = PROVINCIAL_SYMOBOLS["oristano"]
+        elif (re.search('nuoro', province_name)):
+              provincial_symbol = PROVINCIAL_SYMOBOLS["nuoro"]
+        else:
+              raise IllegalArgumentError("Invalid province name")
+
+
+
+        if len(str(self.month)) == 1:
+            self.month = '0' + str(self.month)
+        output_base_filename = "movc_" + provincial_symbol + "_" + str(self.month) + str(self.year)
+        base_dir = os.path.join(str(self.year), self.month)
+        output_dir =  os.path.join(self.get_output_dir(), base_dir)
+        output_filename = os.path.join(output_dir, output_base_filename) + ".txt"
+        return(output_filename)
+
+
+
+    def get_missing_provinces(self, mov_files):
+        prov_symbols = list(map(lambda f: f.split('_')[1], mov_files))
+        symbols = province_data.PROVINCIAL_SYMOBOLS
+        missing_provinces = [k for k,v in symbols.items() if symbols[k] not in prov_symbols]
+        return(missing_provinces)
+
+
+
     def __merge_movs(self, year, month):
-        #input_dir = MovUtility.config_io_paths(year, month)[0]
         month = str(month)
         if len(str(month)) == 1:
             month = '0' + month
@@ -70,10 +109,11 @@ class Movc:
         if not (os.path.isdir(input_dir)):
             raise NotADirectoryError("Invalid input directory!")
         elif len(os.listdir(input_dir)) < province_data.OLD_PROVINCE_NUMBER:
+            provided_movc_files = os.listdir(input_dir)
+            missing_provinces = self.get_missing_provinces(provided_movc_files)
             raise Exception(
-                "Insufficent number of old movc modules.\nTo generate new movc modules you must provide the modules of the eight old provinces.")
+                "Insufficient number of old movc modules.\nMissing provinces: " + str(missing_provinces))
 
-            ##      filenames of the movc modules contained in the source dir
         mov_files = glob.glob(input_dir + "/movc*")
         if not os.path.exists(input_dir):
             raise NotADirectoryError("Invalid output directory!")
@@ -93,6 +133,11 @@ class Movc:
 
         generated_movc = []
         merged_movc = self.__merge_movs(self.year, self.month)
+        # try:
+        #    merged_movc = self.__merge_movs(self.year, self.month)
+        # except Exception as e:
+        #     print(e)
+        #     return
 
         new_province_code = None
         provincial_symbol = None
@@ -153,6 +198,7 @@ class Movc:
         ofile.close()
 
         print("... MOV/C correctly created!\n")
+        return (output_filename)
 
 
     def validate(self, movc_file_generated):
@@ -217,6 +263,10 @@ class Movc:
     def get_duplicate_lines(self, file_rows):
         row_set = set(file_rows)
         return len(file_rows) - len(row_set)
+
+
+    def export_as_xl(self, filename):
+        pass
 
 
 
