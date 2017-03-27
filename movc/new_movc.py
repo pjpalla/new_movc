@@ -65,15 +65,15 @@ class Movc:
 
         province = province_name.lower()
         if (re.search('città|metropolitana|cagliari', province)):
-              provincial_symbol = PROVINCIAL_SYMOBOLS["cagliari"]
+              provincial_symbol = PROVINCIAL_SYMBOLS["cagliari"]
         elif (re.search('sud|sardegna', province)):
-              provincial_symbol = PROVINCIAL_SYMOBOLS["sud sardegna"]
+              provincial_symbol = PROVINCIAL_SYMBOLS["sud sardegna"]
         elif (re.search('sassari', province)):
-              provincial_symbol = PROVINCIAL_SYMOBOLS["sassari"]
+              provincial_symbol = PROVINCIAL_SYMBOLS["sassari"]
         elif (re.search('oristano', province)):
-              provincial_symbol = PROVINCIAL_SYMOBOLS["oristano"]
+              provincial_symbol = PROVINCIAL_SYMBOLS["oristano"]
         elif (re.search('nuoro', province_name)):
-              provincial_symbol = PROVINCIAL_SYMOBOLS["nuoro"]
+              provincial_symbol = PROVINCIAL_SYMBOLS["nuoro"]
         else:
               raise IllegalArgumentError("Invalid province name")
 
@@ -91,7 +91,7 @@ class Movc:
 
     def get_missing_provinces(self, mov_files):
         prov_symbols = list(map(lambda f: f.split('_')[1], mov_files))
-        symbols = province_data.PROVINCIAL_SYMOBOLS
+        symbols = province_data.OLD_PROVINCIAL_SYMBOLS
         missing_provinces = [k for k,v in symbols.items() if symbols[k] not in prov_symbols]
         return(missing_provinces)
 
@@ -144,19 +144,19 @@ class Movc:
         province = province_name.lower()
         if (re.search('città|metropolitana|cagliari', province)):
             new_province_code = NEW_CODES["cagliari"]
-            provincial_symbol = PROVINCIAL_SYMOBOLS["cagliari"]
+            provincial_symbol = PROVINCIAL_SYMBOLS["cagliari"]
         elif (re.search('sud|sardegna', province)):
             new_province_code = NEW_CODES["sud sardegna"]
-            provincial_symbol = PROVINCIAL_SYMOBOLS["sud sardegna"]
+            provincial_symbol = PROVINCIAL_SYMBOLS["sud sardegna"]
         elif (re.search('sassari', province)):
             new_province_code = NEW_CODES["sassari"]
-            provincial_symbol = PROVINCIAL_SYMOBOLS["sassari"]
+            provincial_symbol = PROVINCIAL_SYMBOLS["sassari"]
         elif (re.search('oristano', province)):
             new_province_code = NEW_CODES["oristano"]
-            provincial_symbol = PROVINCIAL_SYMOBOLS["oristano"]
+            provincial_symbol = PROVINCIAL_SYMBOLS["oristano"]
         elif (re.search('nuoro', province_name)):
             new_province_code = NEW_CODES['nuoro']
-            provincial_symbol = PROVINCIAL_SYMOBOLS["nuoro"]
+            provincial_symbol = PROVINCIAL_SYMBOLS["nuoro"]
 
         prov_mapper = self.mapper[self.mapper['prov_new'] == new_province_code]
 
