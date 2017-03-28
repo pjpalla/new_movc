@@ -80,7 +80,7 @@ def generate_movc():
         ### initial file name
         locale.setlocale(locale.LC_ALL, 'ita')
         month_name = (calendar.month_name[int(month)]).capitalize()
-        province_symbol = province_data.PROVINCIAL_SYMOBOLS[province_name]
+        province_symbol = province_data.PROVINCIAL_SYMBOLS[province_name]
         initial_filename = ("MOVC_" + province_symbol + "_" + month_name + "_" + year).upper()
 
         frame = Tk()
@@ -131,7 +131,7 @@ def export_to_xl():
     ### initial file name
     locale.setlocale(locale.LC_ALL, 'ita')
     month_name = (calendar.month_name[int(month)]).capitalize()
-    province_symbol = province_data.PROVINCIAL_SYMOBOLS[province_name]
+    province_symbol = province_data.PROVINCIAL_SYMBOLS[province_name]
     initial_filename = ("MOVC_" + province_symbol + "_" + month_name + "_" + year).upper()
 
     frame = Tk()
@@ -297,7 +297,7 @@ def check_province(province, get_value = False):
     elif (re.search('sud|sardegna', province)):
         province = "sud sardegna"
 
-    if province in province_data.PROVINCIAL_SYMOBOLS.keys():
+    if province in province_data.PROVINCIAL_SYMBOLS.keys():
         if get_value:
             return  province
         else:
