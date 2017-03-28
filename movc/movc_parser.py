@@ -16,7 +16,6 @@ class MovcParser:
         self.movc_path = movc_file
         self.mapper_path = mapper_file
 
-#### ToDo: Implementare un decorator per la gestione della sessione
     def open_session(self):
 #         self.movc = open(self.movc_path, mode='r')
          self.mapper = pandas.read_csv(self.mapper_path, encoding='ISO-8859-1', sep=';', usecols=MAPPER_IDX)
