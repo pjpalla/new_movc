@@ -183,7 +183,6 @@ class Movc:
 
 
         #### Output file ####
-        # TODO: aggiungere uno zero in testa a month qunado è costituito da una sola cifra ####
         if len(str(self.month)) == 1:
             self.month = '0' + str(self.month)
         output_base_filename = "movc_" + provincial_symbol + "_" + str(self.month) + str(self.year)
