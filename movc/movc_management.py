@@ -23,19 +23,31 @@ def menu():
     print("* QUIT                -----> (0)")
 
 
-
-
 def quit():
     return 0
 
+
 def generate_movc():
-    print("***** MOVC GENERTATION PROCEDURE *****\n")
+    print("***** MOVC GENERATION PROCEDURE *****\n")
     province_name = ""
     year = None
     month = None
-
     while True:
-        province_name = input("Province name: \n----> ")
+        province_name = province_menu()
+        if (province_name == False):
+            return
+        # province_name = input("Choose a Province [1-5]: \n\n"
+        #                       "* CITTA' METROPOLITANA DI CAGLIARI -----> (1)\n"
+        #                       "* PROVINCIA DEL SUD SARDEGNA       -----> (2)\n"
+        #                       "* PROVINCIA DI ORISTANO            -----> (3)\n"
+        #                       "* PROVINCIA DI NUORO               -----> (4)\n"
+        #                       "* PROVINCIA DI SASSARI             -----> (5)\n"
+        #                       "* QUIT                             -----> (0)\n\n"
+        #                       " ----> ")
+        #
+        # province_name = check_province(province_name, get_value = True)
+
+
         year = input("\nYear [2016 - ]: \n----> ")
         month = input("\nMonth [1-12]: \n----> ")
         print("\n*******************************************")
@@ -99,8 +111,9 @@ def export_to_xl():
     month = None
 
     while True:
-        province_name = input("Province name: \n----> ")
-        #province_name = check_province(province_name)
+        province_name = province_menu()
+        if (province_name == False):
+            return
         year = input("\nYear [2016 - ]: \n----> ")
         #year = check_year(year)
         month = input("\nMonth [1-12]: \n----> ")
@@ -150,8 +163,9 @@ def validate_movc():
     month = None
 
     while True:
-        province_name = input("Province name: \n----> ")
-        #province_name = check_province(province_name)
+        province_name = province_menu()
+        if (province_name == False):
+            return
         year = input("\nYear [2016 - ]: \n----> ")
         #year = check_year(year)
         month = input("\nMonth [1-12]: \n----> ")
@@ -189,7 +203,10 @@ def load_movc():
     filepath = None
     destination_path = None
     while True:
-        province_name = input("Province name: \n----> ")
+        province_name = province_menu(old = True)
+        if (province_name == False):
+            return
+        #province_name = input("Province name: \n----> ")
         #province_name = check_province(province_name)
         year = input("Year [2016 - ]: \n----> ")
         #year = check_year(year)
@@ -215,8 +232,8 @@ def load_movc():
         confirmation = input("Confirm?[Yes/No/Quit]\n----> ")
 
         if re.search('^[Yy]', confirmation):
-            if (check_province(province_name) & check_year(year) & check_month(month)):
-                province_name = check_province(province_name, True)
+            if (check_old_province(province_name) & check_year(year) & check_month(month, year)):
+                province_name = check_old_province(province_name, True)
             else:
                 return
         elif re.search('^[Nn]', confirmation):
@@ -291,11 +308,23 @@ def check_month(month, year):
         print("**** A problem has occurred.\nIllegal value: [month] ****")
         return False
 
-def check_province(province, get_value = False):
-    if (re.search('città|metropolitana|cagliari', province)):
+def check_province(province, get_value=False):
+    if (province == '1'):
         province = "cagliari"
-    elif (re.search('sud|sardegna', province)):
+    elif (province == '2'):
         province = "sud sardegna"
+    elif (province == '3'):
+        province = "oristano"
+    elif (province == '4'):
+        province = "nuoro"
+    elif (province == '5'):
+        province = "sassari"
+    elif (province == '0'):
+        province = 'quit'
+    # if (re.search('città|metropolitana|cagliari', province)):
+    #     province = "cagliari"
+    # elif (re.search('sud|sardegna', province)):
+    #     province = "sud sardegna"
 
     if province in province_data.PROVINCIAL_SYMBOLS.keys():
         if get_value:
@@ -303,12 +332,71 @@ def check_province(province, get_value = False):
         else:
             return True
     else:
-        print("**** Illegal value: [province] ****")
+        if province != 'quit':
+            print("**** Illegal value: [province] ****")
         return False
 
+def check_old_province(province, get_value = False):
+    if (province == '1'):
+        province = "cagliari"
+    elif (province == '2'):
+        province = "carbonia-iglesias"
+    elif (province == '3'):
+        province = "medio-campidano"
+    elif (province == '4'):
+        province = "oristano"
+    elif (province == '5'):
+        province = "nuoro"
+    elif (province == '6'):
+        province = 'ogliastra'
+    elif (province == '7'):
+        province = 'olbia-tempio'
+    elif (province == '8'):
+        province = 'sassari'
+    elif (province == '0'):
+        province = 'quit'
+    # if (re.search('città|metropolitana|cagliari', province)):
+    #     province = "cagliari"
+    # elif (re.search('sud|sardegna', province)):
+    #     province = "sud sardegna"
 
+    if province in province_data.OLD_PROVINCIAL_SYMBOLS.keys():
+        if get_value:
+            return  province
+        else:
+            return True
+    else:
+        if province != 'quit':
+            print("**** Illegal value: [province] ****")
+        return False
 
+def province_menu(old = False):
 
+     if old == True:
+          province_name = input("Choose a Province [1-5]: \n\n"
+          "* CAGLIARI                -----> (1)\n"
+          "* CARBONIA-IGLESIAS       -----> (2)\n"
+          "* MEDIO-CAMPIDANO         -----> (3)\n"
+          "* ORISTANO                -----> (4)\n"
+          "* NUORO                   -----> (5)\n"
+          "* OGLIASTRA               -----> (6)\n"
+          "* OLBIA-TEMPIO            -----> (7)\n"
+          "* SASSARI                 -----> (8)\n\n"
+          " ----> ")
+     else:
+          province_name = input("Choose a Province [1-5]: \n\n"
+          "* CITTA' METROPOLITANA DI CAGLIARI -----> (1)\n"
+          "* PROVINCIA DEL SUD SARDEGNA       -----> (2)\n"
+          "* PROVINCIA DI ORISTANO            -----> (3)\n"
+          "* PROVINCIA DI NUORO               -----> (4)\n"
+          "* PROVINCIA DI SASSARI             -----> (5)\n"
+          "* QUIT                             -----> (0)\n\n"
+          " ----> ")
+     if (old == True):
+         province_name = check_old_province(province_name, get_value=True)
+     else:
+        province_name = check_province(province_name, get_value=True)
+     return(province_name)
 
 
 if __name__ == "__main__":

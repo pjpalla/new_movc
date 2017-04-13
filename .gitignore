@@ -1,0 +1,6 @@
+.idea
+movc/__pycache__/
+movc/__pycache__/*
+
+
+

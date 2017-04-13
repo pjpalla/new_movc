@@ -139,10 +139,33 @@ class TestMovc(unittest.TestCase):
         # self.assertEqual('95', movc.create_movc("oristano", ""))
 
 
+    def test_get_movc(self):
+        self.movc = Movc(1, 2016)
+        self.movc.set_input_dir(self.input_dir)
+        self.movc.set_output_dir(self.output_dir)
+        movc_file = self.movc.get_movc("cagliari")
+        self.logger.debug(movc_file)
+        self.assertEqual(movc_file, r"C:\Users\piepalla\PycharmProjects\new_movc\output\2016\01\movc_ca_012016.txt")
+        movc_file = self.movc.get_movc("sassari")
+        self.assertEqual(movc_file, r"C:\Users\piepalla\PycharmProjects\new_movc\output\2016\01\movc_ss_012016.txt")
+        self.logger.debug(movc_file)
+        movc_file = self.movc.get_movc("sud sardegna")
+        self.assertEqual(movc_file, r"C:\Users\piepalla\PycharmProjects\new_movc\output\2016\01\movc_sd_012016.txt")
+        movc_file = self.movc.get_movc("pippo")
+        self.logger.debug(movc_file)
 
-        # self.assertTrue(mapper)
-        # logging.info("test get mapper")
-        # logging.info(os.getcwd())
+
+    def test___missing_provinces(self):
+        self.movc = Movc(1, 2017)
+        self.movc.set_input_dir(self.input_dir)
+        self.movc.set_output_dir(self.output_dir)
+        mov_files = os.listdir(r"C:\Users\piepalla\PycharmProjects\new_movc\data\2017\01")
+        self.logger.info(self.movc.get_missing_provinces(mov_files))
+        self.movc1 = Movc(3, 2016)
+        self.movc1.set_input_dir(self.input_dir)
+        self.movc1.set_output_dir(self.output_dir)
+        mov_files = os.listdir(r"C:\Users\piepalla\PycharmProjects\new_movc\data\2016\03")
+        self.logger.info(self.movc.get_missing_provinces(mov_files))
 
     if __name__ == '__main__':
         unittest.main()

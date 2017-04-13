@@ -68,6 +68,8 @@ class MovUtility:
         province_symbol = None
         if province_name.lower() in province_data.PROVINCIAL_SYMBOLS.keys():
             province_symbol = province_data.PROVINCIAL_SYMBOLS[province_name.lower()]
+        elif province_name.lower() in province_data.OLD_PROVINCIAL_SYMBOLS.keys():
+            province_symbol = province_data.OLD_PROVINCIAL_SYMBOLS[province_name.lower()]
         else:
             raise IllegalArgumentError("Invalid province name")
 

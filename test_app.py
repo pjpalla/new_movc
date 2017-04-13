@@ -1,13 +1,40 @@
+# import os
+# import glob
+# import sys
+# from movc import *
+# import csv
+# import datetime
+# from movc.movutility import MovUtility
+# from movc.new_movc import Movc
+# from movc.province_data import *
+# import movc.consts
+
+
+from openpyxl import *
+
+#rom openpyxl import *
+
 import os
-import glob
-import sys
-from movc import *
-import csv
-import datetime
-from movc.movutility import MovUtility
-from movc.new_movc import Movc
-from movc.province_data import *
-import movc.consts
+import copy
+print(os.getcwd())
+
+filepath = os.path.join("config", "movc_base_2012.xlsx")
+output = os.path.join("output", "pippo.xlsx")
+wb = load_workbook(filepath)
+
+ws = wb.active
+
+
+
+ws1 = wb.create_sheet("Armungia")
+ws1.append(ws['A1:A10'])
+# ws1['A1':'A98']
+
+
+wb.save(output)
+
+#openpyxl.worksheet.copier.Worksheet(ws, ws1)
+
 # d = {'one': 1, 'two':2}
 #
 # print(d)
@@ -108,12 +135,12 @@ import movc.consts
 #     print("row length: " + str(len(r)))
 #print(mm)
 
-year = 2016
-month = 1
-
-input, output = MovUtility.config_io_paths(year, month)
-print(input)
-print(output)
-
-print(movc.consts.BASEDIR)
-print(movc.consts.MAPPING_FILE)
+# year = 2016
+# month = 1
+#
+# input, output = MovUtility.config_io_paths(year, month)
+# print(input)
+# print(output)
+#
+# print(movc.consts.BASEDIR)
+# print(movc.consts.MAPPING_FILE)

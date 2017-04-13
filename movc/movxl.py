@@ -42,7 +42,7 @@ class MovXL:
 
             ##workbook generation ###
             ws = active_ws
-            ws.title = comune
+            ws.title = comune.upper()
 
             for code in CAPACITY_CODES:
                 consinstency.append(self.parser.get_capacity(code, b))
@@ -58,6 +58,7 @@ class MovXL:
                 new_ws = self.template.copy_worksheet(ws)
                 active_ws = new_ws
 
+        self.template._sheets.sort(key=lambda ws: ws.title)
         self.template.save(filepath)
 
 
@@ -65,6 +66,7 @@ class MovXL:
         sheet['A1'] = (info_comune['provincia']).upper()
         sheet['A2'] = (info_comune["comune"]).upper()
         sheet['B2'] = info_comune["year"]
+        sheet['B3'] = None
         sheet['D2'] = info_comune["month"]
         sheet['D3'] = info_comune["codice_comune"]
 
