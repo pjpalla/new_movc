@@ -46,13 +46,16 @@ class All7:
 
     def get_arrivi_alloggi(self):
         tot_arrivi = 0
-        sheet_name = self.sheets[0]
-        current_sheet = self.movc.get_sheet_by_name(sheet_name)
-        for label in ALLOGGI_DICT.keys():
-            idx = label + "16"
-            print(current_sheet[idx].value)
-            tot_arrivi += current_sheet[idx].value
-
+        #sheet_name = self.sheets[0]
+        for sheet_name in self.sheets[0:2]:
+            current_sheet = self.movc.get_sheet_by_name(sheet_name)
+            for row_idx in RESIDENTS_RANGE:
+                for k in ALLOGGI_DICT.keys():
+                    idx = ALLOGGI_DICT[k] + str(row_idx)
+                    #print(idx)
+                    #print(current_sheet[idx].value)
+                    tot_arrivi += current_sheet[idx].value
+                    #print("row id: " + str(row_idx) + " " + str(tot_arrivi))
         return(tot_arrivi)
         
 
