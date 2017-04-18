@@ -321,7 +321,7 @@ def check_province(province, get_value=False):
         province = "sassari"
     elif (province == '0'):
         province = 'quit'
-    # if (re.search('città|metropolitana|cagliari', province)):
+    # if (re.search('citta|metropolitana|cagliari', province)):
     #     province = "cagliari"
     # elif (re.search('sud|sardegna', province)):
     #     province = "sud sardegna"
@@ -355,7 +355,7 @@ def check_old_province(province, get_value = False):
         province = 'sassari'
     elif (province == '0'):
         province = 'quit'
-    # if (re.search('città|metropolitana|cagliari', province)):
+    # if (re.search('citta|metropolitana|cagliari', province)):
     #     province = "cagliari"
     # elif (re.search('sud|sardegna', province)):
     #     province = "sud sardegna"
