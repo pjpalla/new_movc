@@ -45,3 +45,9 @@ class TestMovXL(unittest.TestCase):
     def test_builXL(self):
         output_filename = r"C:\Users\piepalla\PycharmProjects\new_movc\output\2016\01\xltest1.xlsx"
         self.movxl.build_xl(output_filename)
+
+    def test_add_summary(self):
+        filepath = r"C:\Users\piepalla\Desktop\new_movc_012017\gennaio\MOVC_CA_GE_2017.xlsx"
+        # output = r"C:\Users\piepalla\Desktop\new_movc_012017\gennaio\riepilogo.xlsx"
+        self.movxl.add_summary(filepath)
+

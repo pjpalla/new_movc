@@ -92,5 +92,36 @@ class MovXL:
             rcounter += 1
         return sheet
 
+    def add_summary(self, filepath):
+        wb =  load_workbook(filepath)
+        sheets = wb.get_sheet_names()
+        last = wb.get_sheet_by_name(sheets[-1])
+
+
+        summary = wb.copy_worksheet(last)
+        ###Info di riepilogo####
+        summary.title = "Riepilogo"
+        summary['A2'] = "Riepilogo"
+        summary['B3'] = None
+        summary['C3'] = None
+        summary['D3'] = None
+        for r in SHEET_ROW_IDX:
+            column_idx = CONS_COL_IDX if r < CONS_UPPER_ROW_LIMIT else MOV_COL_IDX
+            data_list = []
+            summary_data = []
+            for sheet_name in sheets:
+                current_sheet = wb.get_sheet_by_name(sheet_name)
+                data = [current_sheet.cell(row=r, column = i).value for i in column_idx]
+                data_list.append(data)
+            #here we sum the same row of each sheet
+            summary_data = [sum(x) for x in zip(*data_list)]
+            counter = 0
+            for k in column_idx:
+                summary.cell(row=r, column=k, value=summary_data[counter])
+                counter += 1
+
+        wb.save(filepath)
+
+        return(data)
 
 
