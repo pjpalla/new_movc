@@ -100,6 +100,7 @@ def generate_movc():
         frame.destroy()
         print("\nExporting MOV/C to EXCEL\n....\n\n")
         xl_builder.build_xl(filepath)
+        xl_builder.add_summary(filepath)
         print("...MOV/C successfully exported!")
 
 
@@ -152,6 +153,7 @@ def export_to_xl():
     frame.destroy()
     print("\nExporting MOV/C to EXCEL\n....\n\n")
     xl_builder.build_xl(filepath)
+    xl_builder.add_summary(filepath)
     print("...MOV/C successfully exported!")
 
 
