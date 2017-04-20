@@ -15,9 +15,9 @@ class TestAll7(unittest.TestCase):
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
 
-        self.template_path = r"C:\Users\piepalla\PycharmProjects\new_movc\config\allegato7_base.xlsx"
-        self.province_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
-        self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
+        self.template_path = r"config/allegato7_base.xlsx"
+        # self.province_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
+        self.file_example = r"MOVC_CA_GENNAIO_2016.xlsx"
         self.all7 = All7(2016, "città metropolitana di cagliari", self.template_path)
         self.all7.load_xl(self.file_example)
 
@@ -38,4 +38,4 @@ class TestAll7(unittest.TestCase):
 
     def test_get_arrivi_alloggi(self):
         tot_arrivi = self.all7.get_arrivi_alloggi()
-        self.assertEqual(tot_arrivi, )
+        self.assertEqual(tot_arrivi, 1492)
