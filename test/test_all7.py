@@ -15,11 +15,11 @@ class TestAll7(unittest.TestCase):
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
 
-        # self.template_path = r"C:\Users\piepalla\PycharmProjects\new_movc\config\allegato7_base.xlsx"
+        self.template_path = r"C:\Users\piepalla\PycharmProjects\new_movc\config\allegato7_base.xlsx"
         # self.province_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
         # self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
         self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_Gennaio_2016.xlsx"
-        self.all7 = All7(2016, "città metropolitana di cagliari")
+        self.all7 = All7(self.template_path, 2016, "PROVINCIA DI CAGLIARI")
         self.all7.load_xl(self.file_example)
 
 
@@ -96,3 +96,18 @@ class TestAll7(unittest.TestCase):
 
     def test_load_xl(self):
         pass
+
+
+    def test_check_province(self):
+        province = self.all7.check_province(self.all7.movc)
+        self.assertEqual('PROVINCIA DI CAGLIARI', province)
+
+
+    def test_check_year(self):
+        year = self.all7.check_year(self.all7.movc)
+        self.assertEqual('2016', year)
+
+    def test_build_xl(self):
+        movc_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari"
+        output_file = os.path.join(movc_dir, "pippo.xlsx")
+        self.all7.build_xl(movc_dir, output_file)

@@ -8,10 +8,8 @@ class All7:
     def __init__(self, template_file_path, year, province):
         self.year = year
         self.template = load_workbook(template_file_path)
-        if province in NEW_PROVINCES:
-            self.province = province
-        else:
-            raise Exception("Illegal province")
+        self.province = province
+
 
     def load_xl(self, movc_xl_path):
         self.movc = load_workbook(movc_xl_path, data_only=True)
@@ -95,15 +93,78 @@ class All7:
         return(tot)
 
 
-    def build_xl(self, movc_dir):
+    def build_xl(self, movc_dir, output_file):
         file_names = []
+        buffer_residents = []
+        buffer_no_residents = []
+
         try:
             file_names = os.listdir(movc_dir)
         except NotADirectoryError():
             print("Wrong directory! Please enter the correct movc directory name")
             return
+        self.check_movc_files(movc_dir)
 
 
+        for file in file_names:
+            file_path = os.path.join(movc_dir, file)
+            self.load_xl(file_path)
+            if (self.check_province(self.movc)!= self.province and self.check_year(self.movc) != self.year):
+                print("Wrong province or year selected!")
+            month = self.movc.active['A3'].value
+            #### Residents
+            idx_res = ALL7_RESIDENTS_RANGE[MONTHS_DICT[month]]
+            arrivi_alberghi_res = self.get_alberghi()
+            presenze_alberghi_res = self.get_alberghi(type='presenze')
+            arrivi_alloggi_res = self.get_alloggi()
+            presenze_alloggi_res = self.get_alloggi(type='presenze')
+            arrivi_campeggi_res = self.get_campeggi()
+            presenze_campeggi_res = self.get_campeggi(type = 'presenze')
+            arrivi_altri_alloggi_res = self.get_altri_alloggi()
+            presenze_altri_alloggi_res = self.get_altri_alloggi(type='presenze')
+
+            buffer_residents = [arrivi_alberghi_res, presenze_alberghi_res, arrivi_alloggi_res, presenze_alloggi_res, arrivi_campeggi_res, presenze_campeggi_res,
+                                arrivi_altri_alloggi_res, presenze_altri_alloggi_res]
+
+            ###NON Residents
+            idx_no_res = ALL7_NON_RESIDENTS_RANGE[MONTHS_DICT[month]]
+            arrivi_alberghi_no_res = self.get_alberghi(category='non residenti')
+            presenze_alberghi_no_res = self.get_alberghi(type='presenze', category='non residenti')
+            arrivi_alloggi_no_res = self.get_alloggi(category='non residenti')
+            presenze_alloggi_no_res = self.get_alloggi(type='presenze', category='non residenti')
+            arrivi_campeggi_no_res = self.get_campeggi(category='non residenti')
+            presenze_campeggi_no_res = self.get_campeggi(type='presenze', category='non residenti')
+            arrivi_altri_alloggi_no_res = self.get_altri_alloggi(category='non residenti')
+            presenze_altri_alloggi_no_res = self.get_altri_alloggi(type='presenze', category='non residenti')
+
+            buffer_no_residents = [arrivi_alberghi_no_res, presenze_alberghi_no_res, arrivi_alloggi_no_res, presenze_alloggi_no_res, arrivi_campeggi_no_res, presenze_campeggi_no_res,
+                                   arrivi_altri_alloggi_no_res, presenze_altri_alloggi_no_res]
+
+            buff_idx = 0
+            for c in ALL7_COL1:
+                self.template.active.cell(row=idx_res, column=c, value=buffer_residents[buff_idx])
+                self.template.active.cell(row=idx_no_res, column=c, value=buffer_no_residents[buff_idx])
+                buff_idx += 1
+
+        self.template.save(output_file)
 
 
+    def check_movc_files(self, movc_dir):
+        if (not os.path.isdir(movc_dir)):
+            print("invalid movc directory!")
+            return
+        files = os.listdir(movc_dir)
+        if len(files) != NUM_OF_MOVC:
+            print("invalid number of movc modules")
+            return
 
+
+    def check_province(self, workbook):
+        ws = workbook.active
+        province = ws[PROVINCE_CELL].value
+        return province
+
+    def check_year(self, workbook):
+        ws = workbook.active
+        year = ws[YEAR_CELL].value
+        return year
