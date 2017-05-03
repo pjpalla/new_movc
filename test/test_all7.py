@@ -108,6 +108,10 @@ class TestAll7(unittest.TestCase):
         self.assertEqual('2016', year)
 
     def test_build_xl(self):
+        import time
         movc_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari"
         output_file = os.path.join(movc_dir, "pippo.xlsx")
+        start_time = time.time()
         self.all7.build_xl(movc_dir, output_file)
+        elapsed_time = time.time() - start_time
+        self.logger.info("elapsed time: %s"%elapsed_time)
