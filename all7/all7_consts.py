@@ -7,8 +7,15 @@ NON_RESIDENTS_RANGE = list(range(39, 96))
 ### range of cells of the all7 related to people resident and not resident in Italy
 ALL7_RESIDENTS_RANGE = list(range(8, 20))
 ALL7_NON_RESIDENTS_RANGE = list(range(21, 33))
+ALL7_DAYS_RANGE = list(range(8,20))
 ALL7_COL1 = list(range(3, 9)) + list(range(12,14))#[chr(i) for i in range(ord('C'), ord('I'))] + [chr(i) for i in range(ord('L'), ord('N'))]
+ALL7_COL2 = list(range(2, 5))
 
+
+TOT_RES_IDX = 20
+TOT_NO_RES_IDX = 33
+TOT_IDX = 34
+TOT_DAYS_IDX = 20
 ###
 ALLOGGI_DICT = {"B2":["S","T"], "B4":["W", "X"], "B5":["Y", "Z"], "B6":["AA", "AB"], "B7":["AC", "AD"], "B8":["AE", "AF"], "B9": ["AG", "AH"], "C1":["AK", "AL"]}
 CAMPEGGI_DICT = {"B1": ["Q", "R"], "B3":["U", "V"]}
