@@ -94,9 +94,15 @@ class All7:
 
 
     def build_xl(self, movc_dir, output_file):
+
+        template_sheets = self.template.get_sheet_names()
         file_names = []
         buffer_residents = []
         buffer_no_residents = []
+        totali_res = [0]*8
+        totali_no_res = [0]*8
+        totali = [0]*8
+        totali_giornate = [0]*3
 
         try:
             file_names = os.listdir(movc_dir)
@@ -115,6 +121,7 @@ class All7:
             #### Residents
             idx_res = ALL7_RESIDENTS_RANGE[MONTHS_DICT[month]]
             arrivi_alberghi_res = self.get_alberghi()
+
             presenze_alberghi_res = self.get_alberghi(type='presenze')
             arrivi_alloggi_res = self.get_alloggi()
             presenze_alloggi_res = self.get_alloggi(type='presenze')
@@ -125,6 +132,7 @@ class All7:
 
             buffer_residents = [arrivi_alberghi_res, presenze_alberghi_res, arrivi_alloggi_res, presenze_alloggi_res, arrivi_campeggi_res, presenze_campeggi_res,
                                 arrivi_altri_alloggi_res, presenze_altri_alloggi_res]
+            totali_res = [sum(x) for x in zip(totali_res, buffer_residents)]
 
             ###NON Residents
             idx_no_res = ALL7_NON_RESIDENTS_RANGE[MONTHS_DICT[month]]
@@ -140,11 +148,44 @@ class All7:
             buffer_no_residents = [arrivi_alberghi_no_res, presenze_alberghi_no_res, arrivi_alloggi_no_res, presenze_alloggi_no_res, arrivi_campeggi_no_res, presenze_campeggi_no_res,
                                    arrivi_altri_alloggi_no_res, presenze_altri_alloggi_no_res]
 
+            totali_no_res = [sum(x) for x in zip(totali_no_res, buffer_no_residents)]
+            totali = [sum(z) for z in zip(totali_res, totali_no_res)]
+
+            self.template.active = 0
+
             buff_idx = 0
             for c in ALL7_COL1:
                 self.template.active.cell(row=idx_res, column=c, value=buffer_residents[buff_idx])
                 self.template.active.cell(row=idx_no_res, column=c, value=buffer_no_residents[buff_idx])
                 buff_idx += 1
+
+            ### Totals for residents and non residents
+            tot_idx = 0
+            for c in ALL7_COL1:
+                self.template.active.cell(row = TOT_RES_IDX, column=c, value=totali_res[tot_idx])
+                self.template.active.cell(row=TOT_NO_RES_IDX, column=c, value=totali_no_res[tot_idx])
+                self.template.active.cell(row=TOT_IDX, column=c, value=totali[tot_idx])
+                tot_idx += 1
+
+            ### Available bed days
+            self.template.active = 1
+            giornate_letto = self.get_giornate_letto()
+            giornate_camere = self.get_giornate_camere()
+            giornate_camere_occupate = self.get_giornate_camere(type='occupate')
+            buffer_giornate = [giornate_letto, giornate_camere, giornate_camere_occupate]
+
+            totali_giornate = [sum(x) for x in zip(totali_giornate, buffer_giornate)]
+
+            day_idx = ALL7_DAYS_RANGE[MONTHS_DICT[month]]
+            g_idx = 0
+            for c in ALL7_COL2:
+                self.template.active.cell(row = day_idx, column = c, value = buffer_giornate[g_idx])
+                g_idx += 1
+
+            tot_day_idx = 0
+            for c in ALL7_COL2:
+                self.template.active.cell(row=TOT_DAYS_IDX, column = c, value = totali_giornate[tot_day_idx])
+                tot_day_idx += 1
 
         self.template.save(output_file)
 
