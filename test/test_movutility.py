@@ -51,3 +51,8 @@ class TestMovUtilty(unittest.TestCase):
         month = 1
         self.assertEqual("C:\\Users\\piepalla\\PycharmProjects\\new_movc\\data\\2016\\01", self.utility.config_io_paths(year, month))
 
+
+    def test_get_all7_base_dir(self):
+        mu = MovUtility()
+        base_dir = mu.get_all7_base_dir()
+        print(base_dir)
