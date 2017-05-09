@@ -11,6 +11,8 @@ from movc import province_data
 from movc.movutility import MovUtility
 from movc.new_movc import Movc
 from movc.movxl import MovXL
+from all7.all7_consts import *
+from all7.all7 import All7
 import re, os, locale, datetime, calendar
 
 
@@ -20,6 +22,7 @@ def menu():
     print("* VALIDATE MOVC       -----> (2)")
     print("* LOAD MOVC FILE      -----> (3)")
     print("* EXPORT MOVC TO XL   -----> (4)")
+    print("* GENERATE ALLEGATO 7 -----> (5)")
     print("* QUIT                -----> (0)")
 
 
@@ -269,7 +272,8 @@ def main(argv):
         '1': generate_movc,
         '2': validate_movc,
         '3': load_movc,
-        '4': export_to_xl
+        '4': export_to_xl,
+        '5': generate_allegato7
     }
     while True:
         menu()
@@ -399,6 +403,59 @@ def province_menu(old = False):
      else:
         province_name = check_province(province_name, get_value=True)
      return(province_name)
+
+def generate_allegato7():
+    print("***** ALLEGATO 7 GENERATION *****\n")
+    province_name = ""
+    year = None
+    month = None
+    while True:
+        province_name = province_menu()
+        if (province_name == False):
+            return
+        print(province_name)
+        year = input("\nYear [2016 - ]: \n----> ")
+        print("\n*******************************************")
+        print('Data inserted:')
+        print("\nProvince:", province_name)
+        print("\nYear: ", year)
+        print("*********************************************\n")
+        confirmation = input("Confirm?[Yes/No/Quit]\n---->")
+        if re.search('^[Yy]', confirmation):
+            if (check_province(province_name) & check_year(year)):
+                break
+        elif re.search('^[Nn]', confirmation):
+            continue
+        else:
+            return
+    province_extended = ""
+    if (province_name == 'sud sardegna'):
+        province_extended = "sud_sardegna"
+    else:
+        province_extended = province_name
+
+    base_dir = MovUtility.get_all7_base_dir()
+    input_dir = os.path.join(base_dir, year, province_extended)
+    output_dir =  os.path.join(base_dir, year, "output")
+    output_file = os.path.join(output_dir, ALL7_BASE_OUTPUT + year + ALL7_EXT)
+    # print(input_dir)
+    # print(output_dir)
+    # print(output_file)
+    # print(os.listdir(input_dir))
+    all7 = All7(ALL7_TEMPLATE_PATH, 2016, province_name)
+    print("Generating Allegato 7.....\n")
+    print("...the operation can take a few minutes ...")
+    try:
+       all7.build_xl(input_dir, output_file)
+    except Exception as e:
+        print("A problem has occurred! The Allegato 7 generation process failed!\n")
+    finally:
+        return
+
+
+
+
+
 
 
 if __name__ == "__main__":
