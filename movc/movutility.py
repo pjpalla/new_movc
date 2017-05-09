@@ -18,6 +18,13 @@ class MovUtility:
         output_dir = os.path.join(base_dir, base_output_dir)
         return input_dir, output_dir
 
+    @staticmethod
+    def get_all7_base_dir():
+        base_dir = dirname(dirname(realpath(__file__)))
+        base_input_dir = "all7/movc/"
+        input_dir = os.path.join(base_dir, base_input_dir)
+        return input_dir
+
 
     @staticmethod
     def set_io_config():
