@@ -18,8 +18,8 @@ class TestAll7(unittest.TestCase):
         self.template_path = r"C:\Users\piepalla\PycharmProjects\new_movc\config\allegato7_base.xlsx"
         # self.province_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
         # self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_GENNAIO_2016.xlsx"
-        self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari\MOVC_CA_Gennaio_2016.xlsx"
-        self.all7 = All7(self.template_path, 2016, "PROVINCIA DI CAGLIARI")
+        self.file_example = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\2016\cagliari\MOVC_CA_Gennaio_2016.xlsx"
+        self.all7 = All7(self.template_path, 2016, "PROVINCIA DI SASSARI")
         self.all7.load_xl(self.file_example)
 
 
@@ -109,7 +109,7 @@ class TestAll7(unittest.TestCase):
 
     def test_build_xl(self):
         import time
-        movc_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\cagliari"
+        movc_dir = r"C:\Users\piepalla\PycharmProjects\new_movc\all7\movc\2016\cagliari"
         output_file = os.path.join(movc_dir, "pippo.xlsx")
         start_time = time.time()
         self.all7.build_xl(movc_dir, output_file)
