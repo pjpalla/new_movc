@@ -3,6 +3,7 @@ __author__ = 'pg'
 from openpyxl import *
 from movc.province_data import *
 from all7.all7_consts import *
+import re
 
 class All7:
     def __init__(self, template_file_path, year, province):
@@ -28,7 +29,7 @@ class All7:
                 idx = 'O' + str(i) if type == 'arrivi' else 'P' + str(i)
                 # print(current_sheet[idx].value)
                 tot += int(current_sheet[idx].value)
-        print(tot)
+        #print(tot)
         return(tot)
 
     def get_alloggi(self, type='arrivi', category='residenti'):
@@ -115,8 +116,11 @@ class All7:
         for file in file_names:
             file_path = os.path.join(movc_dir, file)
             self.load_xl(file_path)
-            if (self.check_province(self.movc)!= self.province and self.check_year(self.movc) != self.year):
+            if(not(re.search(self.check_province(self.movc), self.province)) and int(self.check_year(self.movc))!= self.year):
+            # if (self.check_province(self.movc)!= self.province and self.check_year(self.movc) != self.year):
                 print("Wrong province or year selected!")
+                return
+
             month = self.movc.active['A3'].value
             #### Residents
             idx_res = ALL7_RESIDENTS_RANGE[MONTHS_DICT[month]]
@@ -187,6 +191,7 @@ class All7:
                 self.template.active.cell(row=TOT_DAYS_IDX, column = c, value = totali_giornate[tot_day_idx])
                 tot_day_idx += 1
 
+            print("...\n")
         self.template.save(output_file)
 
 
