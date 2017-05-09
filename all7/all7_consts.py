@@ -1,5 +1,9 @@
 __author__ = 'pg'
 
+
+#template
+ALL7_TEMPLATE_PATH = r"C:\Users\piepalla\PycharmProjects\new_movc\config\allegato7_base.xlsx"
+
 ### range of cells of the movc related to people resident and not resident in Italy
 RESIDENTS_RANGE = list(range(16, 37))
 NON_RESIDENTS_RANGE = list(range(39, 96))
@@ -10,6 +14,8 @@ ALL7_NON_RESIDENTS_RANGE = list(range(21, 33))
 ALL7_DAYS_RANGE = list(range(8,20))
 ALL7_COL1 = list(range(3, 9)) + list(range(12,14))#[chr(i) for i in range(ord('C'), ord('I'))] + [chr(i) for i in range(ord('L'), ord('N'))]
 ALL7_COL2 = list(range(2, 5))
+ALL7_BASE_OUTPUT = "all7_"
+ALL7_EXT = '.xlsx'
 
 
 TOT_RES_IDX = 20
