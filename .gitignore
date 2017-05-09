@@ -3,6 +3,7 @@ movc/__pycache__/
 movc/__pycache__/*
 movc/__pycache__/movutility.cpython-35.pyc
 
+/merged_files
 
 all7/__pycache__
 all7/movc/2016/cagliari
@@ -12,6 +13,8 @@ all7/movc/2016/sassari
 all7/movc/2016/sud_sardegna
 all7/movc/2016/output/
 
+
+data/
 /data/2017/01/old/movc_ca_012017.txt
 /data/2017/01/movc_ca_012017.txt
 /data/2017/01/old/all_012017.txt
