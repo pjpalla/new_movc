@@ -1,8 +1,10 @@
 .idea
 movc/__pycache__/
 movc/__pycache__/*
+movc/__pycache__/movutility.cpython-35.pyc
 
 
+all7/__pycache__
 all7/movc/2016/cagliari
 all7/movc/2016/nuoro
 all7/movc/2016/oristano
