@@ -13,6 +13,8 @@ from movc.new_movc import Movc
 from movc.movxl import MovXL
 from all7.all7_consts import *
 from all7.all7 import All7
+from ctt4.ctt4 import Ctt4
+from ctt4.ctt4_consts import *
 import re, os, locale, datetime, calendar
 
 
@@ -23,6 +25,7 @@ def menu():
     print("* LOAD MOVC FILE      -----> (3)")
     print("* EXPORT MOVC TO XL   -----> (4)")
     print("* GENERATE ALLEGATO 7 -----> (5)")
+    print("* GENERATE CTT4       -----> (6)")
     print("* QUIT                -----> (0)")
 
 
@@ -273,7 +276,8 @@ def main(argv):
         '2': validate_movc,
         '3': load_movc,
         '4': export_to_xl,
-        '5': generate_allegato7
+        '5': generate_allegato7,
+        '6': generate_ctt4
     }
     while True:
         menu()
@@ -437,12 +441,12 @@ def generate_allegato7():
     base_dir = MovUtility.get_all7_base_dir()
     input_dir = os.path.join(base_dir, year, province_extended)
     output_dir =  os.path.join(base_dir, year, "output")
-    output_file = os.path.join(output_dir, ALL7_BASE_OUTPUT + year + ALL7_EXT)
+    output_file = os.path.join(output_dir, ALL7_BASE_OUTPUT + province_extended + "_" + year + ALL7_EXT)
     # print(input_dir)
     # print(output_dir)
     # print(output_file)
     # print(os.listdir(input_dir))
-    all7 = All7(ALL7_TEMPLATE_PATH, 2016, province_name)
+    all7 = All7(ALL7_TEMPLATE_PATH, year, province_name)
     print("Generating Allegato 7.....\n")
     print("...the operation can take a few minutes ...")
     try:
@@ -453,6 +457,53 @@ def generate_allegato7():
         return
 
 
+def generate_ctt4():
+    print("***** CTT4 GENERATION *****\n")
+    province_name = ""
+    year = None
+
+    while True:
+        province_name = province_menu()
+        if (province_name == False):
+            return
+        print(province_name)
+        year = input("\nYear [2017 - ]: \n----> ")
+        print("\n*******************************************")
+        print('Data inserted:')
+        print("\nProvince:", province_name)
+        print("\nYear: ", year)
+        print("*********************************************\n")
+        confirmation = input("Confirm?[Yes/No/Quit]\n---->")
+        if re.search('^[Yy]', confirmation):
+            if (check_province(province_name) & check_year(year)):
+                break
+        elif re.search('^[Nn]', confirmation):
+            continue
+        else:
+            return
+    province_extended = ""
+    # if (province_name == 'sud sardegna'):
+    #     province_extended = "sud_sardegna"
+    # else:
+    province_extended = province_name
+
+
+    base_dir = MovUtility.get_ctt4_base_dir()
+    input_dir = os.path.join(base_dir, "input")
+    output_dir =  os.path.join(base_dir, "output")
+
+    ctt4 = Ctt4(TEMPLATE_PATH, MAPPING_PATH, year, province_extended)
+
+
+    print("Generating CTT4.....\n")
+    print("...the operation can take a few minutes ...")
+    try:
+        ctt4.build_ctt4(province_extended, year, input_dir, output_dir)
+        print("The operation completed successfully!")
+    except Exception as e:
+        print("A problem has occurred! The CTT4 generation process failed!\n")
+    finally:
+        return
 
 
 
