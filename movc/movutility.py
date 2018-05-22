@@ -25,6 +25,13 @@ class MovUtility:
         input_dir = os.path.join(base_dir, base_input_dir)
         return input_dir
 
+    @staticmethod
+    def get_ctt4_base_dir():
+        base_dir = dirname(dirname(realpath(__file__)))
+        base_input_dir = "ctt4"
+        input_dir = os.path.join(base_dir, base_input_dir)
+        return input_dir
+
 
     @staticmethod
     def set_io_config():
