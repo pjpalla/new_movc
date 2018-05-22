@@ -72,7 +72,8 @@ class TestMovc(unittest.TestCase):
         self.assertEqual(5, mapper.shape[1])
         self.assertIsInstance(mapper, pandas.core.frame.DataFrame)
         self.assertEqual("com_new", list(mapper)[1])
-        self.logger.debug(mapper.ix[:, "prov_new"])
+        self.logger.debug(list(mapper))
+        #self.logger.debug(mapper.ix[:, "prov_new"])
         # logging.debug(mapper.ix[:, "prov_new"])
         # self.logger.warning(mapper.ix[:, "prov_new"])
 
