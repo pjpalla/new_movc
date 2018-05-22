@@ -7,7 +7,7 @@ import re
 
 class All7:
     def __init__(self, template_file_path, year, province):
-        self.year = year
+        self.year = int(year)
         self.template = load_workbook(template_file_path)
         self.province = province
 
