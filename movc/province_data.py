@@ -11,3 +11,4 @@ PROVINCIAL_SYMBOLS = {"cagliari": "ca", "sud sardegna": "sd", "sassari": "ss", "
 OLD_PROVINCIAL_SYMBOLS = {"cagliari": "ca", "medio-campidano": "vs", "ogliastra":"og", "olbia-tempio":"ot", "sassari": "ss", "oristano":"or", "nuoro": "nu", "carbonia-iglesias": "ci"}
 
 
+PROVINCE_FILENAME_MAP = {'cagliari': ['CA'], 'sud sardegna': ['CA', 'CI', 'VS', 'OG', 'OR'], 'nuoro': ['NU', 'OG'], 'oristano': ['OR'], 'sassari': ['OT', 'SS']}
