@@ -3,6 +3,7 @@ import unittest, logging
 from ctt4.ctt4 import *
 from movc.province_data import *
 from openpyxl.drawing.image import Image
+from openpyxl.styles.borders import Border, Side
 import os
 
 class TestCtt4(unittest.TestCase):
@@ -173,6 +174,48 @@ class TestCtt4(unittest.TestCase):
         #ws = wb.get_sheet_by_name('Sez 1')
         self.logger.info(self.ctt4.compute_totals(file1))
 
+
+
+    def test_styles(self):
+        file_path = r"C:\Users\piepalla\PycharmProjects\new_movc\ctt4\input\2017\style_input.xlsx"
+        wb = load_workbook(file_path)
+        thin_border = Border(left=Side(style='thin', color="000000"), right=Side(style='thin', color="000000"),
+                             top=Side(style='thin', color="000000"), bottom=Side(style='thin', color="000000"))
+        ws = wb.active
+        ws["B3"].border = thin_border
+        ws["A5"].border = thin_border
+        output = r"C:\Users\piepalla\PycharmProjects\new_movc\ctt4\output\2017\style_test.xlsx"
+
+        wb.save(output)
+
+
+    def test_apply_formula(self):
+        cols = ["AB", "AC", "AD", "AE"]
+        self.logger.info("***** Sez 1 ****")
+        for c in cols:
+            f = self.ctt4.apply_formula('Sez 1', 9, c)
+            self.logger.info(f)
+
+        cols = ["P", "Q", "R", "S"]
+        self.logger.info("***** Sez 2 ****")
+        for c in cols:
+            f = self.ctt4.apply_formula('Sez 2', 9, c)
+            self.logger.info(f)
+
+
+
+    def test_sum_formula(self):
+        file1 = r"C:\Users\piepalla\PycharmProjects\new_movc\ctt4\examples\formula1.xlsx"
+        output = r"C:\Users\piepalla\PycharmProjects\new_movc\ctt4\examples\out1.xlsx"
+        wb = load_workbook(file1)
+        ws = wb.active
+        self.logger.info(ws["A4"].value)
+        self.logger.info(ws["B4"].value)
+        self.logger.info(ws["D4"].value)
+
+        formula = "=SUM(A4,B4,D4)"
+        ws["H4"] = formula
+        wb.save(output)
 ####### remove useless sheets  - to do ####
         # sheets = self.ctt4.template.get_sheet_names()
         # self.logger.debug(sheets)

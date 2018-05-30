@@ -1,6 +1,7 @@
 __author__ = 'pg'
 
 from openpyxl import *
+from openpyxl.styles.borders import Border, Side
 from movc.province_data import *
 from all7.all7_consts import *
 from ctt4.ctt4_consts import *
@@ -8,11 +9,13 @@ from openpyxl.drawing.image import Image
 import re
 import pandas as pd
 import unittest, logging
+import string
 
 class Ctt4:
     def __init__(self, template_file_path, mapping_file_path, year, province):
         self.year = int(year)
-        self.template = load_workbook(template_file_path,)
+        self.template = load_workbook(template_file_path)
+        self.thin_border = Border(left=Side(style='thin', color="000000"), right=Side(style='thin', color="000000"), top=Side(style='thin', color="000000"), bottom=Side(style='thin', color="000000"))
         self.province = province
         self.mapping = pd.read_csv(mapping_file_path, encoding = 'ISO-8859-1', sep=';', header = 1)
         self.mapping.columns = ['a', 'b', 'c','d', 'e', 'f', 'g']
@@ -105,6 +108,14 @@ class Ctt4:
             img = Image(self.img)
             ws.add_image(img, 'A1')
 
+            #### add province to each sheet
+            ws[PROVINCE_CELL_COORDINATE] = province_name.upper() if province_name != "cagliari" else NEW_PROVINCES[0].upper()
+            ws[PROVINCE_CODE_COORDINATE] = NEW_CODES[province_name]
+            ##########################################################
+            ### add year selected
+            ws[SELECTED_YEAR_CELL] = "ANNO " + str(year) + " - PER COMUNE"
+
+            #ws["A4"].border = self.thin_border
 
             row_idx = MUNICIPALITY_ROW_LOWER_IDX
             sect = []
@@ -132,7 +143,9 @@ class Ctt4:
                     elif c.column == "C":
                         ws[cell_coordinate] = municipality_code
                         continue
-                    #ws.cell(row = row_idx, column = c.column, value = c.value)
+                    elif (sn == 'Sez 1' and c.column in SHEET1_TOT_CELL) or (sn == "Sez 2" and c.column in SHEET2_TOT_CELL):
+                        ws[cell_coordinate] = self.apply_formula(sn, row_idx, c.column)
+                        continue
                     ws[cell_coordinate] = c.value
                 row_idx += 1
 
@@ -159,6 +172,66 @@ class Ctt4:
         return(output_file)
 
 
+    def add_border(self, sheet_name, worksheet):
+        if sheet_name == CTT4_SHEET1:
+            cell_list = SHEET1_CELL_LIST
+        else:
+            cell_list = SHEET2_CELL_LIST
+
+        for coord in cell_list:
+            worksheet[coord].border = self.thin_border
+        return(worksheet)
+
+
+
+
+
     def compute_totals(self, filename, sheetname):
         df = pd.read_excel(filename, sheetname)
         return(df.head(4))
+
+
+
+
+    def apply_formula(self, sheet_name, row_idx, col):
+        i = str(row_idx)
+        ref_cols =  list(string.ascii_uppercase) + ['AA']
+        starting_col = 0
+        pace = PACE
+        f = ""
+        interpolation_var = 0
+        if sheet_name == 'Sez 1':
+            interpolation_var = 6
+            if col == "AB":
+                starting_col = ref_cols.index("D")
+            elif col == "AC":
+                starting_col = ref_cols.index("E")
+            elif col == "AD":
+                starting_col = ref_cols.index("F")
+            elif col == "AE":
+                starting_col = ref_cols.index("G")
+            else:
+                return
+            tmp_f = "=SUM(" + ref_cols[starting_col] + "%s," + ref_cols[starting_col + PACE] + "%s," + ref_cols[
+                starting_col + PACE * 2] + "%s," + ref_cols[starting_col + PACE * 3] + "%s," + \
+                    ref_cols[starting_col + PACE * 4] + "%s," + ref_cols[starting_col + PACE * 5] + "%s)"
+        elif sheet_name == 'Sez 2':
+            interpolation_var = 3
+            if col == "P":
+                starting_col = ref_cols.index("D")
+            elif col == "Q":
+                starting_col = ref_cols.index("E")
+            elif col == "R":
+                starting_col = ref_cols.index("F")
+            elif col == "S" :
+                starting_col = ref_cols.index("G")
+            else:
+                return
+            tmp_f = "=SUM(" + ref_cols[starting_col] + "%s," + ref_cols[starting_col + PACE] + "%s," + ref_cols[
+                starting_col + PACE * 2] + "%s)"
+
+
+        f =  tmp_f % tuple([i]*interpolation_var)
+
+        return(f)
+
