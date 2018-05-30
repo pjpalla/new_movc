@@ -27,3 +27,6 @@ data/old_data/*
 img/
 output/
 test/test_fields.py
+/ctt4/examples/
+/ctt4/output/old/
+/test_app.py
